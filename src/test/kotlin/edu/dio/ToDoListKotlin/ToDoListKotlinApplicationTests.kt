@@ -1,0 +1,13 @@
+package edu.dio.ToDoListKotlin
+
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+
+@SpringBootTest
+class ToDoListKotlinApplicationTests {
+
+	@Test
+	fun contextLoads() {
+	}
+
+}
