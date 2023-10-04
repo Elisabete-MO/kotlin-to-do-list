@@ -1,11 +1,6 @@
 package edu.dio.toDoListKotlin.models.entities
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
@@ -15,14 +10,18 @@ data class User (
     var id: Long? = null,
 
     @Column(nullable = false, unique = true)
-    var username: String = "",
+    var username: String,
 
     @Column(nullable = false, unique = true)
-    var email: String = "",
+    var email: String,
 
     @Column(nullable = false)
-    var password: String = "",
+    var password: String,
 
     @Column(nullable = true)
-    var imageUrl: String? = ""
+    var imageUrl: String? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval
+    = true)
+    var tasks: MutableList<Task> = mutableListOf()
 )
