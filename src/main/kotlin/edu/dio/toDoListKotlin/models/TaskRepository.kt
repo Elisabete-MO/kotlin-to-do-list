@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TaskRepository : JpaRepository<Task, Long> {
     fun findAllByUserId(userId: Long): List<Task>
+    fun findTaskById(id: Long): Task
 }
