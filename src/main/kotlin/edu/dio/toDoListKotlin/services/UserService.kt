@@ -23,6 +23,16 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
         return users.map { e -> UserCreated(e.id, e.username, e.email, e.imageUrl) }
     }
 
+    override fun findById(id: Long): UserCreated? {
+        val user: User = userRepository.findById(id)
+            .orElseThrow {
+                NotFoundException(
+                    "Usuário $id não encontrado!"
+                )
+            }
+        return UserCreated(user.id, user.username, user.email, user.imageUrl)
+    }
+
     override fun findByUsername(username: String): UserCreated? {
         val user: User = userRepository.findByUsername(username)
             .orElseThrow {
@@ -37,31 +47,26 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
         userRepository.save(user.toUser())
     }
 
-    override fun update(user: UserDto) {
-        val existingUser: Optional<User> =
-            Optional.ofNullable(userRepository.findByUsername(user.username)
-                .orElseThrow {
-                    NotFoundException(
-                        "Usuário ${user.username} não encontrado!"
-                    )
-                })
-        if (existingUser.isPresent) {
-            existingUser.get().apply {
-                email = user.email
-                imageUrl = user.imageUrl
-                userRepository.save(this)
+    override fun update(user: User) {
+        val existingUser: User = userRepository.findByUsername(user.username)
+            .orElseThrow {
+                NotFoundException(
+                    "Usuário ${user.username} não encontrado!"
+                )
             }
+        existingUser.apply {
+            email = user.email
+            imageUrl = user.imageUrl
+            userRepository.save(this)
         }
     }
 
-    override fun delete(username: String) {
-        val userData: Optional<User> =
-            Optional.ofNullable(userRepository.findByUsername(username)
-                .orElseThrow {
-                    NotFoundException(
-                        "Usuário $username não encontrado!"
-                    )
-                })
-        userData.ifPresent(userRepository::delete)
+    override fun delete(userId: Long): Boolean {
+        val user: Optional<User> = userRepository.findById(userId)
+        if (user.isPresent) {
+            userRepository.delete(user.get())
+            return true
+        }
+        return false
     }
 }
