@@ -14,6 +14,8 @@ import jakarta.validation.constraints.Size
  * @param password password of the person
  */
 data class UserDto(
+    val id: Long?,
+
     @field:NotEmpty(message = "Invalid input")
     val username: String,
 
@@ -30,7 +32,6 @@ data class UserDto(
 
     val imageUrl: String
 ) {
-
     fun toUser(): User = User(
         id = null,
         username = this.username,

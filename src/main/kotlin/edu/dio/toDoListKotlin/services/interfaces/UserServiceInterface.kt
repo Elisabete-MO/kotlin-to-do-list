@@ -1,5 +1,6 @@
 package edu.dio.toDoListKotlin.services.interfaces
 
+import edu.dio.toDoListKotlin.controllers.dto.UserCreated
 import edu.dio.toDoListKotlin.controllers.dto.UserDto
 
 /**
@@ -8,8 +9,8 @@ import edu.dio.toDoListKotlin.controllers.dto.UserDto
  * same.
  */
 interface UserServiceInterface {
-    fun findAll(): List<UserDto>
-    fun findByUsername(username: String): UserDto?
+    fun findAll(): List<UserCreated>
+    fun findByUsername(username: String): UserCreated?
     fun save(user: UserDto)
     fun update(user: UserDto)
     fun delete(username: String)

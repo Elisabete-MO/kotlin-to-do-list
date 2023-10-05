@@ -14,7 +14,7 @@ import jakarta.persistence.Table
 data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    var id: Long,
 
     @Column(nullable = false, unique = true)
     var username: String = "",
