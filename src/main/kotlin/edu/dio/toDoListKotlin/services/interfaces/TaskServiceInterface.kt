@@ -11,7 +11,8 @@ import edu.dio.toDoListKotlin.models.entities.Task
 interface TaskServiceInterface {
     fun findAll(): List<Task>
     fun findAllByUserId(userId: Long): List<Task>
-    fun save(task: TaskDto)
+    fun findById(id: Long): Task?
+    fun save(task: TaskDto): Task
     fun update(task: Task)
-    fun delete(task: Task)
+    fun delete(taskId: Long): Boolean
 }
