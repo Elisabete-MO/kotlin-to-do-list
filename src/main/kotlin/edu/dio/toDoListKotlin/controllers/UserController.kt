@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.net.URI
 
 /**
  * this [RestController] represents our **Facade**, because it
@@ -34,6 +36,11 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(userService.findByUsername(username))
     }
 
+    @GetMapping
+    fun findById(@RequestParam id: Long): ResponseEntity<UserCreated> {
+        return ResponseEntity.ok(userService.findById(id))
+    }
+
     @PostMapping
     fun save(@RequestBody @Valid user: UserDto): ResponseEntity<UserCreated> {
         userService.save(user)
@@ -41,32 +48,30 @@ class UserController(private val userService: UserService) {
 
     return ResponseEntity
         .created(ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(newUser?.id)
+            .queryParam("userId", newUser?.id)
+            .build()
             .toUri())
         .body(newUser)
     }
 
     @PutMapping
-    fun update(@RequestBody @Valid user: User): ResponseEntity<UserCreated> {
-        userService.update(user)
-        val updatedUser = userService.findById(user.id)
+    fun update(@RequestParam userId: Long, @RequestBody @Valid userDto: UserDto):
+            ResponseEntity<UserCreated> {
+        userService.update(userDto.toUser())
+        val updatedUser = userService.findById(userId)
 
         return ResponseEntity
-            .created(ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(updatedUser?.id)
-                .toUri())
+            .ok()
             .body(updatedUser)
     }
 
-    @DeleteMapping("/{id}")
-    fun delete(@PathVariable userId: Long): ResponseEntity<Void> {
+    @DeleteMapping
+    fun delete(@RequestParam userId: Long): ResponseEntity<Void> {
         val deleted = userService.delete(userId)
-        if (deleted) {
-            return ResponseEntity.ok().build()
+        return if (deleted) {
+            ResponseEntity.ok().build()
         } else {
-            return ResponseEntity.notFound().build()
+            ResponseEntity.notFound().build()
         }
     }
 }

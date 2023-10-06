@@ -20,7 +20,8 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
         if (users.isEmpty()) {
             throw NotFoundException("Nenhum usuário encontrado!")
         }
-        return users.map { e -> UserCreated(e.id, e.username, e.email, e.imageUrl) }
+        return users.map { e -> UserCreated(e.id!!, e.username, e.email, e
+            .imageUrl) }
     }
 
     override fun findById(id: Long): UserCreated? {
@@ -30,7 +31,7 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
                     "Usuário $id não encontrado!"
                 )
             }
-        return UserCreated(user.id, user.username, user.email, user.imageUrl)
+        return UserCreated(user.id!!, user.username, user.email, user.imageUrl)
     }
 
     override fun findByUsername(username: String): UserCreated? {
@@ -40,7 +41,7 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
                     "Usuário $username não encontrado!"
                 )
             }
-        return UserCreated(user.id, user.username, user.email, user.imageUrl)
+        return UserCreated(user.id!!, user.username, user.email, user.imageUrl)
     }
 
     override fun save(user: UserDto) {

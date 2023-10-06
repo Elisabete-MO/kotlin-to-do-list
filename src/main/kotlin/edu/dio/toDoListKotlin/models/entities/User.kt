@@ -1,20 +1,14 @@
 package edu.dio.toDoListKotlin.models.entities
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import com.fasterxml.jackson.annotation.JsonIgnore
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
 data class User (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long?,
 
     @Column(nullable = false, unique = true)
     var username: String = "",
@@ -28,7 +22,8 @@ data class User (
     @Column(nullable = true)
     var imageUrl: String? = null,
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval
-    = true)
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade =
+    [CascadeType.ALL], orphanRemoval = true)
     var tasks: MutableList<Task> = mutableListOf()
 )
