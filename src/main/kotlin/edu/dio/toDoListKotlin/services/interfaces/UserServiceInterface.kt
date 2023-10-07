@@ -15,5 +15,5 @@ interface UserServiceInterface {
     fun findByUsername(username: String): UserCreated?
     fun save(user: UserDto)
     fun update(user: User)
-    fun delete(userId: Long): Boolean
+    fun delete(userId: Long)
 }

@@ -4,11 +4,14 @@ import edu.dio.toDoListKotlin.exceptions.ExceptionDetails
 import edu.dio.toDoListKotlin.exceptions.NotFoundException
 import java.time.LocalDateTime
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DataAccessException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.FieldError
+import org.springframework.validation.ObjectError
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -41,8 +44,8 @@ class GlobalExceptionController {
             )
     }
 
-    @ExceptionHandler(DataIntegrityViolationException::class)
-    fun handleDataIntegrityViolation(e: DataIntegrityViolationException):
+    @ExceptionHandler(DataAccessException::class)
+    fun handleDataIntegrityViolation(e: DataAccessException):
             ResponseEntity<ExceptionDetails> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .headers(headers())
@@ -57,9 +60,15 @@ class GlobalExceptionController {
             )
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException ::class)
+    @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleDataIntegrityViolation(e: MethodArgumentNotValidException):
             ResponseEntity<ExceptionDetails> {
+        val erros: MutableMap<String, String?> = HashMap()
+        e.bindingResult.allErrors.stream().forEach { erro: ObjectError ->
+            val fieldName: String = (erro as FieldError).field
+            val messageError: String? = erro.defaultMessage
+            erros[fieldName] = messageError
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .headers(headers())
             .body(
@@ -68,7 +77,7 @@ class GlobalExceptionController {
                     timestamp = LocalDateTime.now(),
                     status = HttpStatus.BAD_REQUEST.value(),
                     exception = HttpStatus.BAD_REQUEST.name,
-                    details = mutableMapOf(e.cause.toString() to e.message)
+                    details = erros
                 )
             )
     }

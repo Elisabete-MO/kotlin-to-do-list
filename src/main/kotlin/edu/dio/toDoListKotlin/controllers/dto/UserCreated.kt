@@ -25,4 +25,11 @@ data class UserCreated(
         email = this.email,
         imageUrl = this.imageUrl
     )
+
+    fun toUser(): User = User(
+        id = this.id,
+        username = this.username,
+        email = this.email,
+        imageUrl = this.imageUrl
+    )
 }

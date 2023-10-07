@@ -63,12 +63,8 @@ class TaskService(private val taskRepository: TaskRepository) : TaskServiceInter
         taskRepository.save(existingTask)
     }
 
-    override fun delete(taskId: Long): Boolean {
-        val task: Optional<Task> = taskRepository.findById(taskId)
-        if (task.isPresent) {
-            taskRepository.delete(task.get())
-            return true
-        }
-        return false
+    override fun delete(taskId: Long) {
+        val task: Task? = this.findById(taskId)
+        taskRepository.delete(task!!)
     }
 }
