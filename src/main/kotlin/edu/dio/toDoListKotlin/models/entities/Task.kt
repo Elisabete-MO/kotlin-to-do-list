@@ -28,12 +28,12 @@ data class Task (
     @Column(nullable = false)
     var description: String,
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     var status: StatusEnum = StatusEnum.TODO,
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "user_id")
+//    @JoinColumn(nullable = false, name = "user_id")
     var user: User
 ) {
     enum class StatusEnum {

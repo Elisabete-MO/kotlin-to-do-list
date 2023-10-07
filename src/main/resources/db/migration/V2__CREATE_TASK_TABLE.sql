@@ -3,7 +3,7 @@ CREATE TABLE tasks (
    date date NOT NULL,
    title VARCHAR(255),
    description VARCHAR(255) NOT NULL,
-   status VARCHAR(255) NOT NULL,
+   status SMALLINT NOT NULL,
    user_id BIGINT NOT NULL,
    CONSTRAINT pk_tasks PRIMARY KEY (id)
 );

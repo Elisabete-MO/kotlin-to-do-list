@@ -62,12 +62,8 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
         }
     }
 
-    override fun delete(userId: Long): Boolean {
-        val user: Optional<User> = userRepository.findById(userId)
-        if (user.isPresent) {
-            userRepository.delete(user.get())
-            return true
-        }
-        return false
+    override fun delete(userId: Long) {
+        val user: UserCreated? = this.findById(userId)
+        userRepository.delete(user!!.toUser())
     }
 }

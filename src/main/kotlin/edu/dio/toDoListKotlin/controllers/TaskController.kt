@@ -7,6 +7,7 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -44,8 +45,8 @@ class TaskController(private val taskService: TaskService) {
             .body(newTask)
     }
 
-    @PutMapping
-    fun update(@RequestParam taskId: Long, @RequestBody @Valid taskDto: TaskDto):
+    @PutMapping("{taskId}")
+    fun update(@PathVariable taskId: Long, @RequestBody @Valid taskDto: TaskDto):
             ResponseEntity<Task> {
         taskService.update(taskDto.toTask())
         val updatedTask = taskService.findById(taskId)
@@ -53,13 +54,9 @@ class TaskController(private val taskService: TaskService) {
         return ResponseEntity.ok().body(updatedTask)
     }
 
-    @DeleteMapping
-    fun delete(@RequestParam taskId: Long): ResponseEntity<Void> {
-        val deleted = taskService.delete(taskId)
-        return if (deleted) {
-            ResponseEntity.ok().build()
-        } else {
-            ResponseEntity.notFound().build()
-        }
+    @DeleteMapping("{taskId}")
+    fun delete(@PathVariable taskId: Long): ResponseEntity<String> {
+        taskService.delete(taskId)
+        return ResponseEntity.ok("Task $taskId deleted!")
     }
 }

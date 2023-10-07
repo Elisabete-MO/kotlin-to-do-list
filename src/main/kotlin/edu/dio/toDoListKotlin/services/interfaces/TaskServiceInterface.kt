@@ -14,5 +14,5 @@ interface TaskServiceInterface {
     fun findById(id: Long): Task?
     fun save(task: TaskDto): Task
     fun update(task: Task)
-    fun delete(taskId: Long): Boolean
+    fun delete(taskId: Long)
 }
