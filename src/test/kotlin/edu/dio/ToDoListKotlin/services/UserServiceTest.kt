@@ -2,6 +2,7 @@ package edu.dio.ToDoListKotlin.services
 
 import edu.dio.toDoListKotlin.controllers.dto.UserCreated
 import edu.dio.toDoListKotlin.controllers.dto.UserDto
+import edu.dio.toDoListKotlin.exceptions.NotFoundException
 import edu.dio.toDoListKotlin.models.UserRepository
 import edu.dio.toDoListKotlin.models.entities.User
 import edu.dio.toDoListKotlin.services.UserService
@@ -10,18 +11,19 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers
+import org.junit.jupiter.api.function.Executable
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import java.util.*
+import java.util.Optional.empty
 
 @ExtendWith(MockitoExtension::class)
-@DisplayName("User Service Test")
+@DisplayName("User Service Tests")
 @ActiveProfiles("test")
 class UserServiceTest {
 
@@ -39,12 +41,54 @@ class UserServiceTest {
 
         userService.save(userDto)
 
+        verify(userRepository, times(1))
+            .save(Mockito.any(User::class.java))
+
         Mockito.verify(userRepository).save(Mockito.argThat({
             it.username == userDto.username &&
             it.email == userDto.email &&
             it.password == userDto.password &&
             it.imageUrl == userDto.imageUrl
         }))
+    }
+
+    @Test
+    @DisplayName("2 - User Search By ID - Service Layer")
+    fun TestFindById() {
+        val fakeId: Long = Random().nextLong()
+        val user: User = createTestUser(fakeId)
+
+        Mockito.`when`(userRepository.findById(fakeId))
+            .thenReturn(Optional.of(user))
+
+        val userData: UserCreated? =  userService.findById(fakeId)
+
+        verify(userRepository, times(1)).findById(fakeId)
+
+        Assertions.assertNotNull(userData)
+        Assertions.assertEquals(fakeId, userData?.id)
+        Assertions.assertEquals(user.username, userData?.username)
+        Assertions.assertEquals(user.email, userData?.email)
+        Assertions.assertEquals(user.imageUrl, userData?.imageUrl)
+    }
+
+    @Test
+    @DisplayName("3 - User Search By ID Failed - Service Layer")
+    fun TestFindByIdFail() {
+        val fakeId: Long = Random().nextLong()
+
+        Mockito.`when`(userRepository.findById(fakeId))
+            .thenReturn(Optional.empty())
+
+        val exception = Assertions.assertThrows(
+            NotFoundException::class.java,
+            Executable { userService.findById(fakeId) }
+        )
+
+        verify(userRepository, times(1)).findById(fakeId)
+
+        Assertions.assertEquals("Usuário $fakeId não encontrado!", exception.message)
+        Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
     }
 
     // Helper methods
