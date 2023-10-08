@@ -91,6 +91,46 @@ class UserServiceTest {
         Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
     }
 
+    @Test
+    @DisplayName("4 - Find All Users Success - Service Layer")
+    fun TestFindAllUsers() {
+        val fakeId: Long = Random().nextLong()
+        val fakeId1: Long = Random().nextLong()
+        val user: User = createTestUser(fakeId)
+        val user1: User = createTestUser(fakeId1)
+
+        Mockito.`when`(userRepository.findAll()).thenReturn(listOf(user, user1))
+
+        val userData: List<UserCreated> =  userService.findAll()
+
+        verify(userRepository, times(1)).findAll()
+
+        Assertions.assertNotNull(userData)
+        Assertions.assertEquals(2, userData.size)
+
+        Assertions.assertEquals(fakeId1, userData[1].id)
+        Assertions.assertEquals(user1.username, userData[1].username)
+        Assertions.assertEquals(user1.email, userData[1].email)
+        Assertions.assertEquals(user1.imageUrl, userData[1].imageUrl)
+    }
+
+    @Test
+    @DisplayName("5 - Find All Users Failed - Service Layer")
+    fun TestFindAllUsersFail() {
+        Mockito.`when`(userRepository.findAll())
+            .thenReturn(emptyList())
+
+        val exception = Assertions.assertThrows(
+            NotFoundException::class.java,
+            Executable { userService.findAll() }
+        )
+
+        verify(userRepository, times(1)).findAll()
+
+        Assertions.assertEquals("Nenhum usuário encontrado!", exception.message)
+        Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
+    }
+
     // Helper methods
     private fun createTestUserDto(): UserDto {
         return UserDto("Test", "teste@email.com", "123456", "")
