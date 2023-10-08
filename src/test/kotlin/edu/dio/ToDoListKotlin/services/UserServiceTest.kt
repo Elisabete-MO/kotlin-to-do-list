@@ -167,9 +167,47 @@ class UserServiceTest {
 
         verify(userRepository, times(1)).findByUsername(user.username)
 
+        Assertions.assertThrows(NotFoundException::class.java,
+            { userService.findByUsername(user.username) })
         Assertions.assertEquals("Usuário ${user.username} não encontrado!", exception
             .message)
         Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
+    }
+
+    @Test
+    @DisplayName("8 - User Update Success - Service Layer")
+    fun TestUpdateUser() {
+        val fakeId: Long = Random().nextLong()
+        val user: User = createTestUser(fakeId)
+        val updatedUser = User(fakeId, "Test",
+            "teste@email.com", "123456", "new-image-url")
+
+        Mockito.`when`(userRepository.findByUsername(user.username))
+            .thenReturn(Optional.of(user))
+        Mockito.`when`(userRepository.save(updatedUser))
+            .thenReturn(updatedUser)
+
+        userService.update(updatedUser)
+
+        verify(userRepository, times(1)).save(updatedUser)
+        Assertions.assertEquals(updatedUser.username, user.username)
+        Assertions.assertEquals(updatedUser.email, user.email)
+        Assertions.assertEquals(updatedUser.imageUrl, user.imageUrl)
+    }
+
+    @Test
+    @DisplayName("9 - User Delete Success - Service Layer")
+    fun TestDeleteUser() {
+        val fakeId: Long = Random().nextLong()
+        val user: User = createTestUser(fakeId)
+
+        Mockito.`when`(userRepository.findById(fakeId))
+            .thenReturn(Optional.of(user))
+
+        userService.delete(fakeId)
+
+        verify(userRepository, times(1)).findById(fakeId)
+        verify(userRepository, times(1)).delete(user)
     }
 
     // Helper methods
