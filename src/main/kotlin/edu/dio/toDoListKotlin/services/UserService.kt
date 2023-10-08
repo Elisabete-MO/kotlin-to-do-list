@@ -63,7 +63,10 @@ class UserService(private val userRepository: UserRepository) : UserServiceInter
     }
 
     override fun delete(userId: Long) {
-        val user: UserCreated? = this.findById(userId)
-        userRepository.delete(user!!.toUser())
+        val user: User = userRepository.findById(userId)
+            .orElseThrow {
+                NotFoundException("Usuário com ID $userId não encontrado!")
+            }
+        userRepository.delete(user)
     }
 }
