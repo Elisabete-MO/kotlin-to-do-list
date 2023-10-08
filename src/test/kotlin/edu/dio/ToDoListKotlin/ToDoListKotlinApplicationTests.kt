@@ -5,7 +5,7 @@ import edu.dio.toDoListKotlin.services.UserService
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest(classes = [ToDoListKotlinApplication::class])
+@SpringBootTest
 class ToDoListKotlinApplicationTests {
 
 	@Test
