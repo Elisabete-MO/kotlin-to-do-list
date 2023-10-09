@@ -35,7 +35,7 @@ import java.util.*
 //@ContextConfiguration(classes = [UserController::class, UserService::class,
 //    UserRepository::class])
 //@WebMvcTest(UserController::class)
-@DisplayName("User Service Tests")
+@DisplayName("User Integration Tests")
 @TestPropertySource(locations = ["classpath:application-test.properties"])
 class UserControllerTest {
 
@@ -55,38 +55,42 @@ class UserControllerTest {
         const val URL: String = "/users"
     }
 
-//    @BeforeEach fun setUp() {
-//        userRepository.deleteAll()
-//    }
-//
-//    @AfterEach fun tearDown() {
-//        userRepository.deleteAll()
-//    }
+    @Test
+    @DisplayName("1 - Find All Users Success")
+    fun testFindAll() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
 
-//    @Test
-//    @DisplayName("1 - User Creation Success- Service Layer")
-//    fun testFindAll() {
-//        val user: User = createTestUser(1L)
-//        userRepository.save(user)
-//
-//        val response = userRepository.findAll()
-//
-//        Assertions.assertEquals(1, response.size)
-//    }
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/all")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(user.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].username").value(user.username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(user.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].imageUrl").value(user.imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
 
-//    @Test
-//    @DisplayName("2 - User Find All Failed - Service Layer")
-//    fun testFindAllFail() {
-//        val user: User = createTestUser(1L)
-//        userRepository.save(user)
-//
-//        val response = userRepository.findAll()
-//
-//        Assertions.assertEquals(1, response.size)
-//    }
 
     @Test
-    @DisplayName("3 - User Find By Id Success- Integration")
+    @DisplayName("2 - Find All Users Failed")
+    fun testFindAllFail() {
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/all")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value(HttpStatus.NOT_FOUND.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+
+    @Test
+    @DisplayName("3 - User Find By Id Success")
     fun testFindById() {
         val user: User = createTestUser(1L)
         userRepository.save(user)
@@ -102,7 +106,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("4 - User Find By Id Failed - Integration")
+    @DisplayName("4 - User Find By Id Failed")
     fun testFindByIdFail() {
         val id: Long = 99
         mockMvc.perform(MockMvcRequestBuilders.get("$URL/$id")
@@ -119,7 +123,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("5 - User Creation Success - Integration")
+    @DisplayName("5 - User Creation Success")
     fun testSaveUser() {
         val user: UserDto = createTestUserDto()
         val dataUser: String = objectMapper.writeValueAsString(user)
@@ -136,7 +140,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("6 - User Creation Failed - Integration")
+    @DisplayName("6 - User Creation Failed")
     fun testSaveUserFail() {
         userRepository.save(createTestUser(1L))
         val user: UserDto = createTestUserDto()
@@ -157,7 +161,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("7 - User Deleted Success- Integration")
+    @DisplayName("7 - User Deleted Success")
     fun testDeleteUser() {
         val user: User = createTestUser(1L)
         userRepository.save(user)
@@ -184,14 +188,5 @@ class UserControllerTest {
     private fun createTestUserCreated(id: Long): UserCreated {
         val user: User = createTestUserDto().toUser()
         return UserCreated(id, user.username, user.email, user.imageUrl)
-    }
-
-    private fun assertUserEquals(
-        expected: UserDto,
-        actual: Optional<UserDto>
-    ) {
-        Assertions.assertNotNull(actual)
-        Assertions.assertEquals(expected.username, actual.get().username)
-        Assertions.assertEquals(expected.email, actual.get().email)
     }
 }
