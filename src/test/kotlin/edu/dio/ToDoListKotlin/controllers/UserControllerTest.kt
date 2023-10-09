@@ -55,8 +55,71 @@ class UserControllerTest {
         const val URL: String = "/users"
     }
 
+//    @BeforeEach fun setUp() {
+//        userRepository.deleteAll()
+//    }
+//
+//    @AfterEach fun tearDown() {
+//        userRepository.deleteAll()
+//    }
+
+//    @Test
+//    @DisplayName("1 - User Creation Success- Service Layer")
+//    fun testFindAll() {
+//        val user: User = createTestUser(1L)
+//        userRepository.save(user)
+//
+//        val response = userRepository.findAll()
+//
+//        Assertions.assertEquals(1, response.size)
+//    }
+
+//    @Test
+//    @DisplayName("2 - User Find All Failed - Service Layer")
+//    fun testFindAllFail() {
+//        val user: User = createTestUser(1L)
+//        userRepository.save(user)
+//
+//        val response = userRepository.findAll()
+//
+//        Assertions.assertEquals(1, response.size)
+//    }
+
     @Test
-    @DisplayName("5 - User Creation Success - Service Layer")
+    @DisplayName("3 - User Find By Id Success- Integration")
+    fun testFindById() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${user.id}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(user.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value(user.imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("4 - User Find By Id Failed - Integration")
+    fun testFindByIdFail() {
+        val id: Long = 99
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/$id")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value(HttpStatus.NOT_FOUND.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("5 - User Creation Success - Integration")
     fun testSaveUser() {
         val user: UserDto = createTestUserDto()
         val dataUser: String = objectMapper.writeValueAsString(user)
@@ -73,7 +136,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("6 - User Creation Failed - Service Layer")
+    @DisplayName("6 - User Creation Failed - Integration")
     fun testSaveUserFail() {
         userRepository.save(createTestUser(1L))
         val user: UserDto = createTestUserDto()
@@ -93,15 +156,23 @@ class UserControllerTest {
             .andDo(MockMvcResultHandlers.print())
     }
 
+    @Test
+    @DisplayName("7 - User Deleted Success- Integration")
+    fun testDeleteUser() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${user.id}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(user.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value(user.imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
 
     // Helper methods
-
-//    val dataUser: UserDto = {
-//        "username": "Test",
-//        "email": "teste@test.com",
-//        "password": "123456",
-//        "imageUrl": ""
-//    }
 
     private fun createTestUserDto(): UserDto {
         return UserDto("Test", "teste@email.com", "123456", "")
