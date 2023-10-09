@@ -165,10 +165,8 @@ class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${user.id}")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user.id))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.username))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(user.email))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value(user.imageUrl))
+            .andExpect(MockMvcResultMatchers.jsonPath("$").value("User ${user.id} deleted " +
+                    "successfully!"))
             .andDo(MockMvcResultHandlers.print())
     }
 
