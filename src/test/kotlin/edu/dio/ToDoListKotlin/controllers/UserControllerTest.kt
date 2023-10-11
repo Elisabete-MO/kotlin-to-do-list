@@ -35,7 +35,7 @@ import java.util.*
 //@ContextConfiguration(classes = [UserController::class, UserService::class,
 //    UserRepository::class])
 //@WebMvcTest(UserController::class)
-@DisplayName("User Service Tests")
+@DisplayName("User Integration Tests")
 @TestPropertySource(locations = ["classpath:application-test.properties"])
 class UserControllerTest {
 
@@ -55,8 +55,84 @@ class UserControllerTest {
         const val URL: String = "/users"
     }
 
+    @BeforeEach
+    fun setUp() {
+        userRepository.deleteAll()
+    }
+
+    @AfterEach
+    fun tearDown() {
+        userRepository.deleteAll()
+    }
+
     @Test
-    @DisplayName("5 - User Creation Success - Service Layer")
+    @DisplayName("1 - Find All Users Success")
+    fun testFindAll() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/all")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(user.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].username").value(user.username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(user.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].imageUrl").value(user.imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+
+    @Test
+    @DisplayName("2 - Find All Users Failed")
+    fun testFindAllFail() {
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/all")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value(HttpStatus.NOT_FOUND.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("3 - User Find By Id Success")
+    fun testFindById() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
+
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${user.id}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(user.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(user.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value(user.imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("4 - User Find By Id Failed")
+    fun testFindByIdFail() {
+        val id: Long = 99
+        mockMvc.perform(MockMvcRequestBuilders.get("$URL/$id")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value(HttpStatus.NOT_FOUND.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("5 - User Creation Success")
     fun testSaveUser() {
         val user: UserDto = createTestUserDto()
         val dataUser: String = objectMapper.writeValueAsString(user)
@@ -73,7 +149,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("6 - User Creation Failed - Service Layer")
+    @DisplayName("6 - User Creation Failed")
     fun testSaveUserFail() {
         userRepository.save(createTestUser(1L))
         val user: UserDto = createTestUserDto()
@@ -93,15 +169,67 @@ class UserControllerTest {
             .andDo(MockMvcResultHandlers.print())
     }
 
+    @Test
+    @DisplayName("7 - User Deleted Success")
+    fun testDeleteUser() {
+        val user: User = createTestUser(1L)
+        userRepository.save(user)
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${user.id}")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$").value("User ${user.id} deleted " +
+                    "successfully!"))
+            .andDo(MockMvcResultHandlers.print())
+    }
+
+    @Test
+    @DisplayName("8 - User Update Success")
+    fun testUpdateUser() {
+        val fakeId: Long = Random().nextLong()
+        val existsUser: User = createTestUser(fakeId)
+        userRepository.save(existsUser)
+
+        val updateUser: UserDto = createTestUserDto()
+        updateUser.imageUrl = "new-image-url"
+        val dataUser: String = objectMapper.writeValueAsString(updateUser)
+
+        //"$URL?userId=${existsUser.id}" (requestParams)
+        mockMvc.perform(MockMvcRequestBuilders.put("$URL/${existsUser.id}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(dataUser))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(existsUser.id))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.username").value(existsUser
+                .username))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(existsUser.email))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").value(updateUser
+                .imageUrl))
+            .andDo(MockMvcResultHandlers.print())
+    }
+    @Test
+    @DisplayName("9 - User Update Failed")
+    fun testUpdateUserFail() {
+        val fakeId: Long = Random().nextLong()
+        val updateUser: UserDto = createTestUserDto()
+        val dataUser: String = objectMapper.writeValueAsString(updateUser)
+
+        mockMvc.perform(MockMvcRequestBuilders.put("$URL/${fakeId}")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(dataUser))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.timestamp").exists())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
+            .andExpect(
+                MockMvcResultMatchers.jsonPath("$.exception")
+                    .value(HttpStatus.NOT_FOUND.name))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
+            .andDo(MockMvcResultHandlers.print())
+    }
+
 
     // Helper methods
-
-//    val dataUser: UserDto = {
-//        "username": "Test",
-//        "email": "teste@test.com",
-//        "password": "123456",
-//        "imageUrl": ""
-//    }
 
     private fun createTestUserDto(): UserDto {
         return UserDto("Test", "teste@email.com", "123456", "")
@@ -115,14 +243,5 @@ class UserControllerTest {
     private fun createTestUserCreated(id: Long): UserCreated {
         val user: User = createTestUserDto().toUser()
         return UserCreated(id, user.username, user.email, user.imageUrl)
-    }
-
-    private fun assertUserEquals(
-        expected: UserDto,
-        actual: Optional<UserDto>
-    ) {
-        Assertions.assertNotNull(actual)
-        Assertions.assertEquals(expected.username, actual.get().username)
-        Assertions.assertEquals(expected.email, actual.get().email)
     }
 }
