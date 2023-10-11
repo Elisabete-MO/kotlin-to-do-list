@@ -28,7 +28,7 @@ data class UserDto(
     @field:NotEmpty(message = "Password is required")
     val password: String,
 
-    val imageUrl: String
+    var imageUrl: String
 ) {
     fun toUser(): User = User(
         id = null,
