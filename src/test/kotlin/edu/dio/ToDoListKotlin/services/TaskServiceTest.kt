@@ -98,7 +98,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("4 - Find All Tasks Success - Service Layer")
+    @DisplayName("4 - Find All Tasks Success")
     fun TestFindAllTasks() {
         val fakeId: Long = Random().nextLong()
         val fakeId1: Long = Random().nextLong()
@@ -122,7 +122,7 @@ class TaskServiceTest {
     }
 
     @Test
-    @DisplayName("5 - Find All Tasks Failed - Service Layer")
+    @DisplayName("5 - Find All Tasks Failed")
     fun TestFindAllTasksFail() {
         Mockito.`when`(taskRepository.findAll())
             .thenReturn(emptyList())
@@ -136,6 +136,55 @@ class TaskServiceTest {
 
         Assertions.assertEquals("Nenhuma tarefa encontrada!", exception
             .message)
+        Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
+    }
+
+    @Test
+    @DisplayName("6 - Search All Tasks By UserId Success")
+    fun TestFindByUserId() {
+        val fakeId: Long = Random().nextLong()
+        val fakeId1: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+        val task1: Task = createTestTask(fakeId1)
+
+        Mockito.`when`(taskRepository.findAllByUserId(1L)).thenReturn(listOf
+            (task, task1))
+
+        val taskData: List<Task> =  taskService.findAllByUserId(1L)
+
+        verify(taskRepository, times(1)).findAllByUserId(1L)
+
+        Assertions.assertNotNull(taskData)
+        Assertions.assertEquals(2, taskData.size)
+
+        Assertions.assertEquals(fakeId1, taskData[1].id)
+        Assertions.assertEquals(task1.date, taskData[1].date)
+        Assertions.assertEquals(task1.title, taskData[1].title)
+        Assertions.assertEquals(task1.description, taskData[1].description)
+        Assertions.assertEquals(task1.status, taskData[1].status)
+    }
+
+    @Test
+    @DisplayName("7 - Search All Tasks By UserId Failed")
+    fun TestFindByUserIdFail() {
+        val userId = 1L
+        val fakeId: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+
+        Mockito.`when`(taskRepository.findAllByUserId (userId))
+            .thenReturn(emptyList())
+
+        val exception = Assertions.assertThrows(
+            NotFoundException::class.java,
+            Executable { taskService.findAllByUserId(userId) }
+        )
+
+        verify(taskRepository, times(1)).findAllByUserId(userId)
+
+        Assertions.assertThrows(NotFoundException::class.java,
+            { taskService.findAllByUserId(userId) })
+        Assertions.assertEquals("Nenhuma tarefa encontrada para o usuário " +
+                "$userId!", exception.message)
         Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
     }
 
