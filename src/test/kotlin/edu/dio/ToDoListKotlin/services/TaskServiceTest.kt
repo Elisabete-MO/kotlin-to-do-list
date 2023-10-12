@@ -55,6 +55,48 @@ class TaskServiceTest {
         }))
     }
 
+
+    @Test
+    @DisplayName("2 - Task Search By ID")
+    fun TestFindById() {
+        val fakeId: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+
+        Mockito.`when`(taskRepository.findById(fakeId))
+            .thenReturn(Optional.of(task))
+
+        val taskData: Task? =  taskService.findById(fakeId)
+
+        verify(taskRepository, times(1)).findById(fakeId)
+
+        Assertions.assertNotNull(taskData)
+        Assertions.assertEquals(fakeId, taskData?.id)
+        Assertions.assertEquals(task.date, taskData?.date)
+        Assertions.assertEquals(task.title, taskData?.title)
+        Assertions.assertEquals(task.description, taskData?.description)
+        Assertions.assertEquals(task.status, taskData?.status)
+    }
+
+    @Test
+    @DisplayName("3 - Task Search By ID Failed")
+    fun TestFindByIdFail() {
+        val fakeId: Long = Random().nextLong()
+
+        Mockito.`when`(taskRepository.findById(fakeId))
+            .thenReturn(Optional.empty())
+
+        val exception = Assertions.assertThrows(
+            NotFoundException::class.java,
+            Executable { taskService.findById(fakeId) }
+        )
+
+        verify(taskRepository, times(1)).findById(fakeId)
+
+        Assertions.assertEquals("Tarefa $fakeId não encontrada!", exception
+            .message)
+        Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
+    }
+
     // Helper methods
     private fun createTestUser(): User {
         return User(1L, "Test", "teste@email.com", "123456", "")
@@ -69,12 +111,12 @@ class TaskServiceTest {
             .description, task.status, task.user)
     }
 
-    private fun assertTaskEquals(
-        expected: TaskDto,
-        actual: Optional<TaskDto>
-    ) {
-        Assertions.assertNotNull(actual)
-        assertEquals(expected.title, actual.get().title)
-        assertEquals(expected.description, actual.get().description)
-    }
+//    private fun assertTaskEquals(
+//        expected: TaskDto,
+//        actual: Optional<TaskDto>
+//    ) {
+//        Assertions.assertNotNull(actual)
+//        assertEquals(expected.title, actual.get().title)
+//        assertEquals(expected.description, actual.get().description)
+//    }
 }
