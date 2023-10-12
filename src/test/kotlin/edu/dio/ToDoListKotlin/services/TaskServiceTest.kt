@@ -97,6 +97,48 @@ class TaskServiceTest {
         Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
     }
 
+    @Test
+    @DisplayName("4 - Find All Tasks Success - Service Layer")
+    fun TestFindAllTasks() {
+        val fakeId: Long = Random().nextLong()
+        val fakeId1: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+        val task1: Task = createTestTask(fakeId1)
+
+        Mockito.`when`(taskRepository.findAll()).thenReturn(listOf(task, task1))
+
+        val taskData: List<Task> =  taskService.findAll()
+
+        verify(taskRepository, times(1)).findAll()
+
+        Assertions.assertNotNull(taskData)
+        Assertions.assertEquals(2, taskData.size)
+
+        Assertions.assertEquals(fakeId1, taskData[1].id)
+        Assertions.assertEquals(task1.date, taskData[1].date)
+        Assertions.assertEquals(task1.title, taskData[1].title)
+        Assertions.assertEquals(task1.description, taskData[1].description)
+        Assertions.assertEquals(task1.status, taskData[1].status)
+    }
+
+    @Test
+    @DisplayName("5 - Find All Tasks Failed - Service Layer")
+    fun TestFindAllTasksFail() {
+        Mockito.`when`(taskRepository.findAll())
+            .thenReturn(emptyList())
+
+        val exception = Assertions.assertThrows(
+            NotFoundException::class.java,
+            Executable { taskService.findAll() }
+        )
+
+        verify(taskRepository, times(1)).findAll()
+
+        Assertions.assertEquals("Nenhuma tarefa encontrada!", exception
+            .message)
+        Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
+    }
+
     // Helper methods
     private fun createTestUser(): User {
         return User(1L, "Test", "teste@email.com", "123456", "")
