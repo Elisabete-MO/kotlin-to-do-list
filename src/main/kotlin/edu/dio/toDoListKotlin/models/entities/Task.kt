@@ -26,7 +26,7 @@ data class Task (
     var title: String? = null,
 
     @Column(nullable = false)
-    var description: String,
+    var description: String = "",
 
     @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
@@ -34,7 +34,7 @@ data class Task (
 
     @ManyToOne
 //    @JoinColumn(nullable = false, name = "user_id")
-    var user: User
+    var user: User = User(null, "", "", "", null, mutableListOf())
 ) {
     enum class StatusEnum {
         TODO, IN_PROGRESS, COMPLETED
