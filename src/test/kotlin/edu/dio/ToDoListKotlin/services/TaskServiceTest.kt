@@ -142,17 +142,18 @@ class TaskServiceTest {
     @Test
     @DisplayName("6 - Search All Tasks By UserId Success")
     fun TestFindByUserId() {
+        val userId = 1L
         val fakeId: Long = Random().nextLong()
         val fakeId1: Long = Random().nextLong()
         val task: Task = createTestTask(fakeId)
         val task1: Task = createTestTask(fakeId1)
 
-        Mockito.`when`(taskRepository.findAllByUserId(1L)).thenReturn(listOf
+        Mockito.`when`(taskRepository.findAllByUserId(userId)).thenReturn(listOf
             (task, task1))
 
-        val taskData: List<Task> =  taskService.findAllByUserId(1L)
+        val taskData: List<Task> =  taskService.findAllByUserId(userId)
 
-        verify(taskRepository, times(1)).findAllByUserId(1L)
+        verify(taskRepository, times(1)).findAllByUserId(userId)
 
         Assertions.assertNotNull(taskData)
         Assertions.assertEquals(2, taskData.size)
@@ -168,8 +169,6 @@ class TaskServiceTest {
     @DisplayName("7 - Search All Tasks By UserId Failed")
     fun TestFindByUserIdFail() {
         val userId = 1L
-        val fakeId: Long = Random().nextLong()
-        val task: Task = createTestTask(fakeId)
 
         Mockito.`when`(taskRepository.findAllByUserId (userId))
             .thenReturn(emptyList())
@@ -188,17 +187,43 @@ class TaskServiceTest {
         Assertions.assertEquals(NotFoundException::class.java, exception.javaClass)
     }
 
+    @Test
+    @DisplayName("8 - Task Update Success")
+    fun TestUpdateTask() {
+        val fakeId: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+        val updatedTask = Task(fakeId, LocalDate.now(), "Update", "Update Task",
+            Task.StatusEnum.COMPLETED, task.user)
+
+        println(task)
+        println(updatedTask)
+        Mockito.`when`(taskRepository.findById(fakeId))
+            .thenReturn(Optional.of(task))
+        Mockito.`when`(taskRepository.save(updatedTask))
+            .thenReturn(updatedTask)
+
+        taskService.update(updatedTask)
+
+        verify(taskRepository, times(1)).save(updatedTask)
+        Mockito.verify(taskRepository).save(Mockito.argThat({
+            it.date == updatedTask.date &&
+                    it.title == updatedTask.title &&
+                    it.description == updatedTask.description &&
+                    it.status == updatedTask.status
+        }))
+    }
+
     // Helper methods
     private fun createTestUser(): User {
         return User(1L, "Test", "teste@email.com", "123456", "")
     }
     private fun createTestTaskDto(): TaskDto {
-        return TaskDto(LocalDate.parse("2023-05-05"), "Test","Test Task", Task.StatusEnum.TODO, 1L)
+        return TaskDto(LocalDate.now(), "Test","Test Task", Task.StatusEnum.TODO, 1L)
     }
 
     private fun createTestTask(id: Long): Task {
         val task: Task = createTestTaskDto().toTask()
-        return Task(id, LocalDate.parse("2023-05-05"), task.title, task
+        return Task(id, task.date, task.title, task
             .description, task.status, task.user)
     }
 
