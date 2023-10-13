@@ -1,0 +1,181 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > UserController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.dio.toDoListKotlin.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: UserController (edu.dio.toDoListKotlin.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package edu.dio.toDoListKotlin.controllers
+&nbsp;
+&nbsp;import edu.dio.toDoListKotlin.controllers.dto.UserCreated
+&nbsp;import edu.dio.toDoListKotlin.controllers.dto.UserDto
+&nbsp;import edu.dio.toDoListKotlin.models.entities.User
+&nbsp;import edu.dio.toDoListKotlin.services.UserService
+&nbsp;import jakarta.validation.Valid
+&nbsp;import org.springframework.http.ResponseEntity
+&nbsp;import org.springframework.web.bind.annotation.DeleteMapping
+&nbsp;import org.springframework.web.bind.annotation.GetMapping
+&nbsp;import org.springframework.web.bind.annotation.RestController
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping
+&nbsp;import org.springframework.web.bind.annotation.PathVariable
+&nbsp;import org.springframework.web.bind.annotation.PostMapping
+&nbsp;import org.springframework.web.bind.annotation.RequestBody
+&nbsp;import org.springframework.web.bind.annotation.PutMapping
+&nbsp;import org.springframework.web.bind.annotation.RequestParam
+&nbsp;import org.springframework.web.bind.annotation.ResponseStatus
+&nbsp;import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+&nbsp;import java.net.URI
+&nbsp;
+&nbsp;/**
+&nbsp; * this [RestController] represents our **Facade**, because it
+&nbsp; * abstracts all complexity of integrations (H2 Database and awesome API) in a
+&nbsp; * simple and cohesive interface (REST API).
+&nbsp; */
+<b class="nc">&nbsp;@RestController</b>
+&nbsp;@RequestMapping(value = [&quot;/users&quot;])
+<b class="nc">&nbsp;class UserController(private val userService: UserService) {</b>
+&nbsp;    @GetMapping(&quot;/all&quot;)
+&nbsp;    fun findAll(): ResponseEntity&lt;List&lt;UserCreated&gt;&gt; {
+<b class="nc">&nbsp;        return ResponseEntity.ok(userService.findAll())</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping
+&nbsp;    fun findByUsername(@RequestParam username: String): ResponseEntity&lt;UserCreated&gt; {
+<b class="nc">&nbsp;        return ResponseEntity.ok(userService.findByUsername(username))</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/{id}&quot;)
+&nbsp;    fun findById(@PathVariable id: Long): ResponseEntity&lt;UserCreated&gt; {
+<b class="nc">&nbsp;        return ResponseEntity.ok(userService.findById(id))</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping
+&nbsp;    fun save(@RequestBody @Valid user: UserDto): ResponseEntity&lt;UserCreated&gt; {
+<b class="nc">&nbsp;        userService.save(user)</b>
+<b class="nc">&nbsp;        val newUser = userService.findByUsername(user.username)</b>
+&nbsp;
+&nbsp;    return ResponseEntity
+<b class="nc">&nbsp;        .created(ServletUriComponentsBuilder.fromCurrentRequest()</b>
+&nbsp;//            .queryParam(&quot;userId&quot;, newUser?.id)
+&nbsp;//            .build()
+<b class="nc">&nbsp;            .path(&quot;/{id}&quot;)</b>
+<b class="nc">&nbsp;            .buildAndExpand(newUser?.id)</b>
+<b class="nc">&nbsp;            .toUri())</b>
+<b class="nc">&nbsp;        .body(newUser)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/{userId}&quot;)
+&nbsp;    fun update(@PathVariable userId: Long, @RequestBody @Valid userDto: UserDto):
+&nbsp;            ResponseEntity&lt;UserCreated&gt; {
+<b class="nc">&nbsp;        userService.update(userDto.toUser())</b>
+<b class="nc">&nbsp;        val updatedUser = userService.findById(userId)</b>
+&nbsp;
+&nbsp;        return ResponseEntity
+<b class="nc">&nbsp;            .ok()</b>
+<b class="nc">&nbsp;            .body(updatedUser)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/{userId}&quot;)
+&nbsp;    fun delete(@PathVariable userId: Long): ResponseEntity&lt;String&gt; {
+<b class="nc">&nbsp;        userService.delete(userId)</b>
+<b class="nc">&nbsp;        return ResponseEntity.ok(&quot;User $userId deleted &quot; +</b>
+&nbsp;                &quot;successfully!&quot;)
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-12 21:53</div>
+</div>
+</body>
+</html>

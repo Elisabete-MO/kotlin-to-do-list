@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TaskService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">edu.dio.toDoListKotlin.services</a>
+</div>
+
+<h1>Coverage Summary for Class: TaskService (edu.dio.toDoListKotlin.services)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaskService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88,9%
+  </span>
+  <span class="absValue">
+    (8/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93,9%
+  </span>
+  <span class="absValue">
+    (31/33)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package edu.dio.toDoListKotlin.services
+&nbsp;
+&nbsp;import edu.dio.toDoListKotlin.controllers.dto.TaskDto
+&nbsp;import edu.dio.toDoListKotlin.exceptions.NotFoundException
+&nbsp;import edu.dio.toDoListKotlin.models.entities.Task
+&nbsp;import edu.dio.toDoListKotlin.models.TaskRepository
+&nbsp;import edu.dio.toDoListKotlin.models.entities.User
+&nbsp;import edu.dio.toDoListKotlin.services.interfaces.TaskServiceInterface
+&nbsp;import jakarta.transaction.Transactional
+&nbsp;import java.util.Optional
+&nbsp;import org.springframework.stereotype.Service
+&nbsp;
+&nbsp;/**
+&nbsp; * Implementation of the [TaskServiceInterface] interface for the [Task] entity.
+&nbsp; */
+<b class="fc">&nbsp;@Service</b>
+<b class="fc">&nbsp;class TaskService(private val taskRepository: TaskRepository) : TaskServiceInterface</b>
+&nbsp;{
+&nbsp;    override fun findAll(): List&lt;Task&gt; {
+<b class="fc">&nbsp;        val tasks: List&lt;Task&gt; = taskRepository.findAll()</b>
+<b class="fc">&nbsp;        if (tasks.isEmpty()) {</b>
+<b class="fc">&nbsp;            throw NotFoundException(&quot;Nenhuma tarefa encontrada!&quot;)</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return tasks.map { e -&gt; Task(e.id, e.date, e.title, e.description, e</b>
+<b class="fc">&nbsp;            .status, e.user) }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun findAllByUserId(userId: Long): List&lt;Task&gt; {
+<b class="fc">&nbsp;        val tasks: List&lt;Task&gt; = taskRepository.findAllByUserId(userId)</b>
+<b class="fc">&nbsp;        if (tasks.isEmpty()) {</b>
+<b class="fc">&nbsp;                throw NotFoundException(</b>
+<b class="fc">&nbsp;                    &quot;Nenhuma tarefa encontrada para o usuário $userId!&quot;</b>
+&nbsp;                )
+&nbsp;            }
+<b class="fc">&nbsp;        return tasks.map { e -&gt; Task(e.id, e.date, e.title, e.description, e</b>
+<b class="fc">&nbsp;            .status, e.user) }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun findById(id: Long): Task? {
+<b class="fc">&nbsp;        val task: Task = taskRepository.findById(id)</b>
+<b class="fc">&nbsp;            .orElseThrow {</b>
+<b class="fc">&nbsp;                NotFoundException(</b>
+<b class="fc">&nbsp;                    &quot;Tarefa $id não encontrada!&quot;</b>
+&nbsp;                )
+&nbsp;            }
+<b class="fc">&nbsp;        return Task(task.id, task.date, task.title, task.description, task</b>
+<b class="fc">&nbsp;            .status, task.user)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun save(task: TaskDto): Task {
+<b class="fc">&nbsp;        return taskRepository.save(task.toTask())</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Transactional
+&nbsp;    override fun update(task: Task) {
+<b class="fc">&nbsp;        val existingTask: Task = taskRepository.findById(task.id!!)</b>
+<b class="fc">&nbsp;            .orElseThrow {</b>
+<b class="nc">&nbsp;                NotFoundException(</b>
+<b class="nc">&nbsp;                    &quot;Tarefa ${task.id} não encontrada!&quot;                )</b>
+&nbsp;            }
+<b class="fc">&nbsp;        existingTask.apply {</b>
+<b class="fc">&nbsp;            date = task.date</b>
+<b class="fc">&nbsp;            status = task.status</b>
+<b class="fc">&nbsp;            title = task.title</b>
+<b class="fc">&nbsp;            description = task.description</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        taskRepository.save(existingTask)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    override fun delete(taskId: Long) {
+<b class="fc">&nbsp;        val task: Task? = this.findById(taskId)</b>
+<b class="fc">&nbsp;        taskRepository.delete(task!!)</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-12 21:53</div>
+</div>
+</body>
+</html>

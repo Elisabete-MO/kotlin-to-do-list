@@ -195,8 +195,6 @@ class TaskServiceTest {
         val updatedTask = Task(fakeId, LocalDate.now(), "Update", "Update Task",
             Task.StatusEnum.COMPLETED, task.user)
 
-        println(task)
-        println(updatedTask)
         Mockito.`when`(taskRepository.findById(fakeId))
             .thenReturn(Optional.of(task))
         Mockito.`when`(taskRepository.save(updatedTask))
@@ -211,6 +209,21 @@ class TaskServiceTest {
                     it.description == updatedTask.description &&
                     it.status == updatedTask.status
         }))
+    }
+
+    @Test
+    @DisplayName("9 - Task Delete Success - Service Layer")
+    fun TestDeleteTask() {
+        val fakeId: Long = Random().nextLong()
+        val task: Task = createTestTask(fakeId)
+
+        Mockito.`when`(taskRepository.findById(fakeId))
+            .thenReturn(Optional.of(task))
+
+        taskService.delete(fakeId)
+
+        verify(taskRepository, times(1)).findById(fakeId)
+        verify(taskRepository, times(1)).delete(task)
     }
 
     // Helper methods
