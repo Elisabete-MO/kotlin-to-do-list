@@ -23,7 +23,7 @@ import java.util.*
 import java.util.Optional.empty
 
 @ExtendWith(MockitoExtension::class)
-@DisplayName("User Service Tests")
+@DisplayName("User Service Layer Tests")
 @ActiveProfiles("test")
 class UserServiceTest {
 

@@ -53,7 +53,11 @@ class TaskService(private val taskRepository: TaskRepository) : TaskServiceInter
 
     @Transactional
     override fun update(task: Task) {
-        val existingTask: Task = taskRepository.findTaskById(task.id!!)
+        val existingTask: Task = taskRepository.findById(task.id!!)
+            .orElseThrow {
+                NotFoundException(
+                    "Tarefa ${task.id} não encontrada!"                )
+            }
         existingTask.apply {
             date = task.date
             status = task.status
