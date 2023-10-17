@@ -1,6 +1,4 @@
-# :notebook_with_decorative_cover: Boas-vindas ao repositório do projeto To Do List! :heavy_check_mark:
-
-:siren: **ATENÇÃO!**: esse projeto ainda não foi finalizado :construction: <br>
+# :notebook_with_decorative_cover: Boas-vindas ao repositório do projeto To Do List! :ballot_box_with_check:
 
 <h3 align="center"><strong> API Rest para gerenciamento de tarefas </strong></h3>
 <p align="center">
@@ -39,28 +37,17 @@ possível criar, editar, excluir e listar tarefas.
 - [ ] Filtrar as tarefas por status, categoria ou data de criação;<br>
 
 <h3> Objetivo: </h3>
-O principal propósito deste projeto é aplicar os padrões de projeto MVC em 
-uma aplicação Kotlin e Spring Boot com front-end desenvolvido em Angular. A 
-intenção é criar uma API Rest totalmente documentada com o auxílio do 
-Swagger e testá-la usando JUnit e Mockito. A API será responsável por 
-gerenciar as tarefas de um usuário, integrando o sistema com um banco de 
-dados relacional em memória sem esquecer de aplicar os conceitos de boas 
-práticas em desenvolvimento de software no atendimento aos seguintes requisitos:
+  <h6><strong> :warning: Projeto em desenvolvimento :construction: </strong></h6>
+  <p> O principal propósito deste projeto é aplicar os padrões de projeto MVC em uma aplicação Kotlin e Spring Boot com frontend desenvolvido em Angular. A intenção é criar uma API Rest totalmente documentada com o auxílio do Swagger e testá-la usando JUnit e Mockito. A API será responsável por gerenciar as tarefas de um usuário, integrando o sistema com um banco de dados relacional em memória sem esquecer de aplicar os conceitos de boas práticas em desenvolvimento de software no atendimento aos seguintes requisitos:</p>
 
-<details>
-    <summary>
-        <strong> :memo: Requisitos </strong>
-    </summary>
+<h3><strong> :memo: Requisitos </strong></h3>
 
-- [x] Desenhar diagrama de classes da aplicação com Mermaid; <br>
-
-<details>
-O diagrama de classes abaixo ilustra a estrutura do projeto, destacando as 
-principais entidades e suas relações. Ele fornece uma visão geral da arquitetura do sistema e como as classes interagem umas com as outras.
-Neste diagrama, é possível observar as principais classes envolvidas no 
-projeto incluindo `User` e `Task`. A relação entre essas classes é 
-representada pelas setas, indicando como elas se conectam.
-Este diagrama serve como um guia visual útil para entender a estrutura do sistema e as classes envolvidas nas operações.
+- [x] Desenhar o **diagrama de classes** da aplicação com Mermaid;
+      
+ <details> <summary><strong> Diagrama de Classes </strong></summary>
+<span> O diagrama de classes abaixo ilustra a estrutura do projeto, destacando as principais entidades e suas relações. Ele fornece uma visão geral da arquitetura do sistema e como as classes interagem umas com as outras.
+Neste diagrama, é possível observar as principais classes envolvidas no projeto incluindo `User` e `Task`. A relação entre essas classes é representada pelas setas, indicando como elas se conectam.
+Este diagrama serve como um guia visual útil para entender a estrutura do sistema e as classes envolvidas nas operações.</span>
 
 ```mermaid
 classDiagram
@@ -97,11 +84,11 @@ class Status {
     IN_PROGRESS
     DONE 
     }
-  	
-  	
+  		
   User "1" *-- "n" Task
   Task "1" -- "1" Status
-  ```
+```
+</details>
 
 - [x] Desenvolver a API em Kotlin e Spring; <br>
 - [x] Documentar a API com o Swagger; <br>
@@ -116,30 +103,25 @@ class Status {
   - [ ] Criar a query para consultar tarefas por data de criação; <br>
   - [x] Criar as queries para deletar os dados; <br>
   - [x] Criar as queries para atualizar os dados; <br>
-  - [x] Intriduzir o processo de versionamento de banco de dados via FlyWay;
-    <br>
-- [ ] Introduzir processo de autenticação de usuários com o Spring Security;
-  <br>
-- [ ] Desenvolver o front-end em Angular; <br>
+  - [x] Introduzir o processo de versionamento de banco de dados via FlyWay;<br>
+- [ ] Introduzir processo de autenticação de usuários com o Spring Security;<br>
+- [ ] Desenvolver o frontend em Angular; <br>
 - [ ] Fazer o deploy da aplicação no Railway.
 
 </details>
-</details>
 
-:siren: Todos esses conhecimentos foram adquiridos e/ou aprimorados durante o 
-Code Update TQI - Backend com Kotlin e Java, promovido pela Digital Innovation One.
+<h6> :rotating_light: Todos esses conhecimentos foram adquiridos e/ou aprimorados durante o Code Update TQI - Backend com Kotlin e Java, promovido pela Digital Innovation One. </h6>
 
 <h3> :pencil: Instruções de Uso</h3>
 
-<p> :x: No Terminal/Console:</p>
+<p> :heavy_check_mark: No Terminal/Console:</p>
 
-<h6> :writing_hand: Visando facilitar a demostração da aplicação,
-recomendo a execução do projeto através da IDE do IntelliJ IDEA. </h6>
+<h6> :information_source: Visando facilitar a demostração da aplicação, recomendo a execução do projeto através da IDE do IntelliJ IDEA. </h6>
 
 <ol>
 	<li>Faça um clone do projeto na sua máquina: <code>git clone git@github.com:Elisabete-MO/kotlin-to-do-list.git</code></li>
     <li>Abra o projeto no IntelliJ IDEA;</li>
-    <li>Entre na pasta raiz do projeto: <code>cd </code></li>
+    <li>Entre na pasta raiz do projeto: <code>cd <nome_da_pasta> </code></li>
 	<li>Execute o comando: <code>mvn install</code></li>
     <li>Execute o comando: <code>mvn spring-boot:run</code></li>
     <li>Abra o navegador e digite: <code>http://localhost:8080/swagger-ui.html</code></li>
@@ -151,8 +133,5 @@ recomendo a execução do projeto através da IDE do IntelliJ IDEA. </h6>
         <strong> :calendar: Histórico </strong>
     </summary>
 
-Esse projeto foi desenvolvido primeiramente em HTML, CSS e javascript para
-atender aos requisitos de avaliação do módulo de front-end do curso de
-desenvolvimento web da Trybe. Agora, venho aplicar os conhecimentos adquiridos em Kotlin e Spring Boot para desenvolver uma API e,
-posteriormente, irei utilizar o Angular para remodelar o front-end.
+Esse projeto foi desenvolvido primeiramente em HTML, CSS e javascript para atender aos requisitos de avaliação do módulo de front-end do curso de desenvolvimento web da Trybe. Agora, venho aplicar os conhecimentos adquiridos em Kotlin e Spring Boot para desenvolver uma API e, posteriormente, irei utilizar o Angular para remodelar o front-end.
 </details>
