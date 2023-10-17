@@ -200,7 +200,7 @@ class TaskServiceTest {
         Mockito.`when`(taskRepository.save(updatedTask))
             .thenReturn(updatedTask)
 
-        taskService.update(updatedTask)
+        taskService.update(updatedTask, fakeId)
 
         verify(taskRepository, times(1)).save(updatedTask)
         Mockito.verify(taskRepository).save(Mockito.argThat({
@@ -230,6 +230,7 @@ class TaskServiceTest {
     private fun createTestUser(): User {
         return User(1L, "Test", "teste@email.com", "123456", "")
     }
+
     private fun createTestTaskDto(): TaskDto {
         return TaskDto(LocalDate.now(), "Test","Test Task", Task.StatusEnum.TODO, 1L)
     }
@@ -239,13 +240,4 @@ class TaskServiceTest {
         return Task(id, task.date, task.title, task
             .description, task.status, task.user)
     }
-
-//    private fun assertTaskEquals(
-//        expected: TaskDto,
-//        actual: Optional<TaskDto>
-//    ) {
-//        Assertions.assertNotNull(actual)
-//        assertEquals(expected.title, actual.get().title)
-//        assertEquals(expected.description, actual.get().description)
-//    }
 }

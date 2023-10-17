@@ -13,6 +13,6 @@ interface TaskServiceInterface {
     fun findAllByUserId(userId: Long): List<Task>
     fun findById(id: Long): Task?
     fun save(task: TaskDto): Task
-    fun update(task: Task)
+    fun update(task: Task, taskId: Long)
     fun delete(taskId: Long)
 }

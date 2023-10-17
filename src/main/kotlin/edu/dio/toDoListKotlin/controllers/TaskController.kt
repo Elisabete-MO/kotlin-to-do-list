@@ -48,7 +48,7 @@ class TaskController(private val taskService: TaskService) {
     @PutMapping("{taskId}")
     fun update(@PathVariable taskId: Long, @RequestBody @Valid taskDto: TaskDto):
             ResponseEntity<Task> {
-        taskService.update(taskDto.toTask())
+        taskService.update(taskDto.toTask(), taskId)
         val updatedTask = taskService.findById(taskId)
 
         return ResponseEntity.ok().body(updatedTask)
@@ -57,6 +57,6 @@ class TaskController(private val taskService: TaskService) {
     @DeleteMapping("{taskId}")
     fun delete(@PathVariable taskId: Long): ResponseEntity<String> {
         taskService.delete(taskId)
-        return ResponseEntity.ok("Task $taskId deleted!")
+        return ResponseEntity.ok("Task $taskId deleted successfully!")
     }
 }

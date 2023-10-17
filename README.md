@@ -1,6 +1,8 @@
-# :notebook_with_decorative_cover: Boas-vindas ao repositório do projeto To Do List! :writing_hand:
+# :notebook_with_decorative_cover: Boas-vindas ao repositório do projeto To Do List! :heavy_check_mark:
 
-<p align="center">API Rest para gerenciamento de tarefas</p>
+:siren: **ATENÇÃO!**: esse projeto ainda não foi finalizado :construction: <br>
+
+<h3 align="center"><strong> API Rest para gerenciamento de tarefas </strong></h3>
 <p align="center">
      <a alt="Java" href="https://java.com" target="_blank">
         <img src="https://img.shields.io/badge/Java-v17.0.6-5382A1.svg" />
@@ -24,8 +26,41 @@
 
 <h3>Descrição do Projeto</h3>
 
+Essa é uma aplicação que gerencia tarefas, onde, através de uma API Rest, é 
+possível criar, editar, excluir e listar tarefas.
+
+<h3> :bookmark_tabs: O usuário será capaz de: </h3>
+
+- [ ] Fazer login; <br>
+- [ ] Adicionar, remover e editar uma tarefa;<br>
+- [ ] Marcar e desmarcar uma tarefa como concluída;<br>
+- [ ] Adicionar, remover e editar uma categoria;<br>
+- [ ] Visualizar uma lista com as tarefas cadastradas;<br>
+- [ ] Filtrar as tarefas por status, categoria ou data de criação;<br>
+
+<h3> Objetivo: </h3>
+O principal propósito deste projeto é aplicar os padrões de projeto MVC em 
+uma aplicação Kotlin e Spring Boot com front-end desenvolvido em Angular. A 
+intenção é criar uma API Rest totalmente documentada com o auxílio do 
+Swagger e testá-la usando JUnit e Mockito. A API será responsável por 
+gerenciar as tarefas de um usuário, integrando o sistema com um banco de 
+dados relacional em memória sem esquecer de aplicar os conceitos de boas 
+práticas em desenvolvimento de software no atendimento aos seguintes requisitos:
+
 <details>
-  <summary><strong>Diagrama de classes</strong></summary>
+    <summary>
+        <strong> :memo: Requisitos </strong>
+    </summary>
+
+- [x] Desenhar diagrama de classes da aplicação com Mermaid; <br>
+
+<details>
+O diagrama de classes abaixo ilustra a estrutura do projeto, destacando as 
+principais entidades e suas relações. Ele fornece uma visão geral da arquitetura do sistema e como as classes interagem umas com as outras.
+Neste diagrama, é possível observar as principais classes envolvidas no 
+projeto incluindo `User` e `Task`. A relação entre essas classes é 
+representada pelas setas, indicando como elas se conectam.
+Este diagrama serve como um guia visual útil para entender a estrutura do sistema e as classes envolvidas nas operações.
 
 ```mermaid
 classDiagram
@@ -67,43 +102,57 @@ class Status {
   User "1" *-- "n" Task
   Task "1" -- "1" Status
   ```
+
+- [x] Desenvolver a API em Kotlin e Spring; <br>
+- [x] Documentar a API com o Swagger; <br>
+- [ ] Estruturar as classes no banco de dados; <br>
+  - [x] Classe User; <br>
+  - [x] Classe Task; <br>
+  - [x] Criar as relações entre as tabelas; <br>
+  - [x] Criar as queries para inserir os dados; <br>
+  - [x] Criar a query para consultar as tarefas por id de usuário; <br>
+  - [ ] Criar a query para consultar tarefas por status; <br>
+  - [ ] Criar a query para consultar tarefas por categoria; <br>
+  - [ ] Criar a query para consultar tarefas por data de criação; <br>
+  - [x] Criar as queries para deletar os dados; <br>
+  - [x] Criar as queries para atualizar os dados; <br>
+  - [x] Intriduzir o processo de versionamento de banco de dados via FlyWay;
+    <br>
+- [ ] Introduzir processo de autenticação de usuários com o Spring Security;
+  <br>
+- [ ] Desenvolver o front-end em Angular; <br>
+- [ ] Fazer o deploy da aplicação no Railway.
+
+</details>
 </details>
 
-[//]: # (Documentação)
+:siren: Todos esses conhecimentos foram adquiridos e/ou aprimorados durante o 
+Code Update TQI - Backend com Kotlin e Java, promovido pela Digital Innovation One.
 
-[//]: # ()
-[//]: # (Flyway é uma dentre as várias ferramentas que se propõem a trazer )
-[//]: # (:bookmark_tabs:)
+<h3> :pencil: Instruções de Uso</h3>
 
-[//]: # (:memo:)
+<p> :x: No Terminal/Console:</p>
 
-[//]: # (:pencil:)
+<h6> :writing_hand: Visando facilitar a demostração da aplicação,
+recomendo a execução do projeto através da IDE do IntelliJ IDEA. </h6>
 
-[//]: # (:calendar:)
+<ol>
+	<li>Faça um clone do projeto na sua máquina: <code>git clone git@github.com:Elisabete-MO/kotlin-to-do-list.git</code></li>
+    <li>Abra o projeto no IntelliJ IDEA;</li>
+    <li>Entre na pasta raiz do projeto: <code>cd </code></li>
+	<li>Execute o comando: <code>mvn install</code></li>
+    <li>Execute o comando: <code>mvn spring-boot:run</code></li>
+    <li>Abra o navegador e digite: <code>http://localhost:8080/swagger-ui.html</code></li>
+    <li>Para acessar o banco de dados, digite: <code>http://localhost:8080/h2-console</code></li>
+</ol>
 
-[//]: # (:heavy_check_mark:)
+<details>
+    <summary>
+        <strong> :calendar: Histórico </strong>
+    </summary>
 
-[//]: # (:x:)
-[//]: # (ordem e organização para os scripts SQL que são executados no banco de dados, funcionando como um controle de versão do mesmo.)
-
-[//]: # ()
-[//]: # (<h3>Instrução de Uso</h3>)
-
-[//]: # ()
-[//]: # (<p>No Terminal/Console:</p>)
-
-[//]: # ()
-[//]: # (<ol>)
-
-[//]: # (	<li>Faça um clone do projeto na sua máquina: <code>git clone git@github.com:cami-la/credit-application-system.git</code></li>)
-
-[//]: # (	<li>Entre na pasta raiz do projeto: <code>cd </code></li>)
-
-[//]: # (	<li>Execute o comando: <code>./gradlew bootrun</code></li>)
-
-[//]: # (</ol>)
-
-[//]: # ()
-[//]: # (<h6>** Visando facilitar a demostração da aplicação, recomendo instalar apenas o IntelliJ IDEA e executar o projeto através da IDE **</h6>)
-
-[//]: # (<a href="https://drive.google.com/file/d/1wxwioDHS1sKFPq4G7b24tVZb-XMnoj-l/view?usp=share_link"> 🚀 Collection API - Postman</a><br>)
+Esse projeto foi desenvolvido primeiramente em HTML, CSS e javascript para
+atender aos requisitos de avaliação do módulo de front-end do curso de
+desenvolvimento web da Trybe. Agora, venho aplicar os conhecimentos adquiridos em Kotlin e Spring Boot para desenvolver uma API e,
+posteriormente, irei utilizar o Angular para remodelar o front-end.
+</details>

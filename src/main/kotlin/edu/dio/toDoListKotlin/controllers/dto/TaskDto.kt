@@ -19,14 +19,14 @@ data class TaskDto(
     @field:FutureOrPresent (message = "Date must be in the future or present")
     val date: LocalDate = now(),
 
-    val title: String?,
+    var title: String?,
 
     @Column(nullable = false)
-    val description: String,
+    var description: String,
 
-    val status: Task.StatusEnum = Task.StatusEnum.TODO,
+    var status: Task.StatusEnum = Task.StatusEnum.TODO,
 
-    val userId: Long
+    var userId: Long
 ) {
     fun toTask(): Task = Task(
         id = null,

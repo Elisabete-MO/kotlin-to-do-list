@@ -52,11 +52,11 @@ class TaskService(private val taskRepository: TaskRepository) : TaskServiceInter
     }
 
     @Transactional
-    override fun update(task: Task) {
-        val existingTask: Task = taskRepository.findById(task.id!!)
+    override fun update(task: Task, taskId: Long) {
+        val existingTask: Task = taskRepository.findById(taskId)
             .orElseThrow {
                 NotFoundException(
-                    "Tarefa ${task.id} não encontrada!"                )
+                    "Tarefa $taskId não encontrada!"                )
             }
         existingTask.apply {
             date = task.date
